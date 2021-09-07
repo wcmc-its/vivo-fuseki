@@ -1,6 +1,19 @@
-server {
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vivo-fuseki-nginx-configmap
+  namespace: reciter
+  labels:
+    app: vivo-fuseki
+    environment: dev
+    tier: backend
+    owner: szd2013
+data:
+  nginx.conf: |-
+    server {
         listen 80 default_server;
         listen [::]:80 default_server;
+
         fastcgi_buffers 16 32k;
         fastcgi_buffer_size 32k;
 
@@ -12,7 +25,7 @@ server {
         location / {
             client_max_body_size 0;
             rewrite ^/fuseki/(.*)$ /$1 break;
-            proxy_pass http://app:3030;
+            proxy_pass http://localhost:3030;
             proxy_set_header Host $host:$server_port;
             proxy_set_header X-Forwarded-Host $server_name;
             proxy_set_header X-Real-IP $remote_addr;
