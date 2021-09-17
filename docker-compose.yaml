@@ -6,8 +6,27 @@ services:
     restart: always
     ports:
     - 80:80
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: us-east-1
+        awslogs-group: /logs/vivo-fuseki/nginx
+        awslogs-create-group: 'true'
     volumes:
     - ./nginx/conf.d:/etc/nginx/conf.d
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-S", "http://localhost/nginx-health"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 2m
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 400M
+        reservations:
+          memory: 400M
     depends_on:
     - app
 
@@ -15,12 +34,34 @@ services:
     container_name: apache-jena-fuseki-4.1.0
     restart: always
     environment: 
-      - JAVA_OPTIONS=-Xmx1048m
+      - JAVA_OPTIONS="-Xmx4096m -javaagent:/app/newrelic/newrelic.jar"
+      - NEW_RELIC_APP_NAME="VIVO Fuseki:Prod"
+      - NEW_RELIC_LICENSE_KEY="KEY"
     build: ./
     working_dir: /app
     ports:
       - "3030:3030"
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: us-east-1
+        awslogs-group: /logs/vivo-fuseki
+        awslogs-create-group: 'true'
     expose:
       - "3030"
     volumes:
-      - /Users/sarbajitdutta/Documents/VIVO/home/tdbContentModels:/app/tdbContentModels
+      - /srv/tdbContentModels:/app/tdbContentModels
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-S", "http://localhost:3030/$/ping"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 2m
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 5G
+        reservations:
+          memory: 5G
