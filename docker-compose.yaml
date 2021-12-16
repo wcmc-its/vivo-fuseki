@@ -31,7 +31,7 @@ services:
     - app
 
   app:
-    container_name: apache-jena-fuseki-4.1.0
+    container_name: apache-jena-fuseki-4.3.1
     restart: always
     environment: 
       - JAVA_OPTIONS="-Xmx4096m -javaagent:/app/newrelic/newrelic.jar"
