@@ -53,6 +53,6 @@ ja:MemoryDataset  rdfs:subClassOf  ja:RDFDataset .
 
 :tdb_dataset_readwrite
         rdf:type      tdb:DatasetTDB ;
-        tdb:location  "/Users/sarbajitdutta/Downloads/apache-jena-fuseki-4.1.0/run/databases/vivo" .
+        tdb:location  "/Users/sarbajitdutta/Downloads/apache-jena-fuseki-4.3.1/run/databases/vivo" .
 
 ja:DatasetRDFS  rdfs:subClassOf  ja:RDFDataset .
